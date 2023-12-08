@@ -31,6 +31,8 @@
 #define B4DetectorConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
+#include "G4SystemOfUnits.hh"
+#include <G4Material.hh>
 #include "globals.hh"
 
 class G4VPhysicalVolume;
@@ -66,6 +68,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     // get methods
     //
     const G4VPhysicalVolume* GetAbsorberPV() const;
+    const G4VPhysicalVolume* GetSensitivePV() const;
     const G4VPhysicalVolume* GetGapPV() const;
 
   private:
@@ -73,22 +76,47 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     //
     void DefineMaterials();
     G4VPhysicalVolume* DefineVolumes();
-
+    void LayerConstraction(G4double x, G4double y, G4LogicalVolume* calorLV);
     // data members
     //
     static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger;
                                       // magnetic field messenger
 
     G4VPhysicalVolume* fAbsorberPV = nullptr; // the absorber physical volume
+    G4VPhysicalVolume* fSensitivePV = nullptr; // the absorber physical volume
     G4VPhysicalVolume* fGapPV = nullptr;      // the gap physical volume
 
     G4bool fCheckOverlaps = true; // option to activate checking of volumes overlaps
+
+  // Geometry parameters
+  G4int nofLayers = 26;
+  G4int nofCells = 40;
+  G4double absoThickness = 3.5*mm;
+  G4double sensThickness = 0.3*mm;
+  G4double gapThickness =  1.7*mm;
+  G4double calorSizeXY  = 1.01*cm;
+
+  G4double layerThickness = absoThickness +  sensThickness + gapThickness;
+  G4double calorThickness = nofLayers * layerThickness;
+  G4double calorLength = nofCells * calorSizeXY;
+  G4double worldSizeXY = 1.2 * calorLength;
+  G4double worldSizeZ  = 1.2 * calorThickness;
+
+  // Get materials
+  G4Material * defaultMaterial = nullptr;
+  G4Material * absorberMaterial = nullptr;
+  G4Material * sensMaterial = nullptr;
+  G4Material * gapMaterial = nullptr;
 };
 
 // inline functions
 
 inline const G4VPhysicalVolume* DetectorConstruction::GetAbsorberPV() const {
   return fAbsorberPV;
+}
+
+inline const G4VPhysicalVolume* DetectorConstruction::GetSensitivePV() const {
+  return fSensitivePV;
 }
 
 inline const G4VPhysicalVolume* DetectorConstruction::GetGapPV() const  {
