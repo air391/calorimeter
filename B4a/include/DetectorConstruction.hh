@@ -76,7 +76,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     //
     void DefineMaterials();
     G4VPhysicalVolume* DefineVolumes();
-    void LayerConstraction(G4double x, G4double y, G4LogicalVolume* calorLV);
+    void LayerConstruction(G4double x, G4double y, G4LogicalVolume* layerLV);
     // data members
     //
     static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger;

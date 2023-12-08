@@ -111,29 +111,8 @@ void DetectorConstruction::DefineMaterials()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void DetectorConstruction::LayerConstraction(G4double x, G4double y, G4LogicalVolume* calorLV)
+void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVolume* layerLV)
 {
-  //
-  // Layer
-  //
-  auto layerS
-    = new G4Box("Layer",           // its name
-                 calorSizeXY/2, calorSizeXY/2, layerThickness/2); // its size
-
-  auto layerLV
-    = new G4LogicalVolume(
-                 layerS,           // its solid
-                 defaultMaterial,  // its material
-                 "Layer");         // its name
-
-  new G4PVReplica(
-                 "Layer",          // its name
-                 layerLV,          // its logical volume
-                 calorLV,          // its mother
-                 kZAxis,           // axis of replication
-                 nofLayers,        // number of replica
-                 layerThickness);  // witdth of replica
-
   //
   // Absorber
   //
@@ -282,13 +261,35 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                  0,                // copy number
                  fCheckOverlaps);  // checking overlaps
 
-  for (G4int i = 18; i < 19; ++i) {
-    for (G4int j = 18; j < 19; ++j) {
-        auto x = (i - 19) * calorSizeXY;
-        auto y = (j - 19) * calorSizeXY;
+  //
+  // Layer
+  //
+  auto layerS
+    = new G4Box("Layer",           // its name
+                 calorLength/2, calorLength/2, layerThickness/2); // its size
+
+  auto layerLV
+    = new G4LogicalVolume(
+                 layerS,           // its solid
+                 defaultMaterial,  // its material
+                 "Layer");         // its name
+
+  new G4PVReplica(
+              "Layer",          // its name
+              layerLV,          // its logical volume
+              calorLV,          // its mother
+              kZAxis,           // axis of replication
+              nofLayers,        // number of replica
+              layerThickness);  // witdth of replica
+
+
+  for (G4int i = 0; i < 40; ++i) {
+    for (G4int j = 0; j < 40; ++j) {
+        auto x = (i - 19.5) * calorSizeXY;
+        auto y = (j - 19.5) * calorSizeXY;
         // auto x = 0;
         // auto y = 0;
-        LayerConstraction(x, y, calorLV);
+        LayerConstruction(x, y, layerLV);
     }
   }
 
