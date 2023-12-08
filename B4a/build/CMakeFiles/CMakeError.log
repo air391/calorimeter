@@ -1,0 +1,43 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/yang/VM_connection/workspace/B4a/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_94376/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_94376.dir/build.make CMakeFiles/cmTC_94376.dir/build
+gmake[1]: 进入目录“/home/yang/VM_connection/workspace/B4a/build/CMakeFiles/CMakeTmp”
+Building C object CMakeFiles/cmTC_94376.dir/src.c.o
+/home/yang/anaconda3/envs/g4/bin/x86_64-conda-linux-gnu-cc -DCMAKE_HAVE_LIBC_PTHREAD  -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/yang/anaconda3/envs/g4/include  -o CMakeFiles/cmTC_94376.dir/src.c.o -c /home/yang/VM_connection/workspace/B4a/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_94376
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_94376.dir/link.txt --verbose=1
+/home/yang/anaconda3/envs/g4/bin/x86_64-conda-linux-gnu-cc -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/yang/anaconda3/envs/g4/include  -Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,--allow-shlib-undefined -Wl,-rpath,/home/yang/anaconda3/envs/g4/lib -Wl,-rpath-link,/home/yang/anaconda3/envs/g4/lib -L/home/yang/anaconda3/envs/g4/lib  CMakeFiles/cmTC_94376.dir/src.c.o -o cmTC_94376 
+/home/yang/anaconda3/envs/g4/bin/../lib/gcc/x86_64-conda-linux-gnu/12.3.0/../../../../x86_64-conda-linux-gnu/bin/ld: CMakeFiles/cmTC_94376.dir/src.c.o: in function `main':
+src.c:(.text.startup.main+0x24): undefined reference to `pthread_create'
+/home/yang/anaconda3/envs/g4/bin/../lib/gcc/x86_64-conda-linux-gnu/12.3.0/../../../../x86_64-conda-linux-gnu/bin/ld: src.c:(.text.startup.main+0x2e): undefined reference to `pthread_detach'
+/home/yang/anaconda3/envs/g4/bin/../lib/gcc/x86_64-conda-linux-gnu/12.3.0/../../../../x86_64-conda-linux-gnu/bin/ld: src.c:(.text.startup.main+0x38): undefined reference to `pthread_cancel'
+/home/yang/anaconda3/envs/g4/bin/../lib/gcc/x86_64-conda-linux-gnu/12.3.0/../../../../x86_64-conda-linux-gnu/bin/ld: src.c:(.text.startup.main+0x44): undefined reference to `pthread_join'
+/home/yang/anaconda3/envs/g4/bin/../lib/gcc/x86_64-conda-linux-gnu/12.3.0/../../../../x86_64-conda-linux-gnu/bin/ld: src.c:(.text.startup.main+0x50): undefined reference to `pthread_atfork'
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_94376.dir/build.make:99：cmTC_94376] 错误 1
+gmake[1]: 离开目录“/home/yang/VM_connection/workspace/B4a/build/CMakeFiles/CMakeTmp”
+gmake: *** [Makefile:127：cmTC_94376/fast] 错误 2
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
