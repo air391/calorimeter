@@ -83,6 +83,11 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
   if( volume != fDetConstruction->GetGapPV() && volume != fDetConstruction->GetAbsorberPV()) {
     G4cout << "--- StepAction: edep in sen "<< edep <<G4endl;
   }
+  for (int i = 0; i < 40*40; i++) {
+    if(volume == fDetConstruction->GetSensitivePV()[i].pv) {
+      fEventAction->AddSen(i, edep, stepLength);
+    }
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

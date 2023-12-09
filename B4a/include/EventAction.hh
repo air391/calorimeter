@@ -32,7 +32,7 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
-
+#include <vector>
 namespace B4a
 {
 
@@ -55,12 +55,15 @@ class EventAction : public G4UserEventAction
 
     void AddAbs(G4double de, G4double dl);
     void AddGap(G4double de, G4double dl);
+    void AddSen(int i, G4double de, G4double dl);
 
   private:
     G4double  fEnergyAbs = 0.;
     G4double  fEnergyGap = 0.;
     G4double  fTrackLAbs = 0.;
     G4double  fTrackLGap = 0.;
+    std::vector<G4double>  fEnergySen = std::vector<G4double>(40*40);
+    G4double  fTrackLSen = 0.;
 };
 
 // inline functions
@@ -73,6 +76,11 @@ inline void EventAction::AddAbs(G4double de, G4double dl) {
 inline void EventAction::AddGap(G4double de, G4double dl) {
   fEnergyGap += de;
   fTrackLGap += dl;
+}
+
+inline void EventAction::AddSen(int i ,G4double de, G4double dl) {
+  fEnergySen[i] += de;
+  fTrackLSen += dl;
 }
 
 }

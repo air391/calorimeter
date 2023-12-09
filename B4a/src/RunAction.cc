@@ -34,7 +34,7 @@
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
-
+#include <string>
 namespace B4
 {
 
@@ -65,6 +65,11 @@ RunAction::RunAction()
   analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 100*MeV);
   analysisManager->CreateH1("Labs","trackL in absorber", 100, 0., 1*m);
   analysisManager->CreateH1("Lgap","trackL in gap", 100, 0., 50*cm);
+  analysisManager->CreateH1("Lsen", "trackL in sensitive Si", 100, 0, 50*cm);
+  for (int i = 0; i < 40*40; i++) {
+    analysisManager->CreateH1("Esen", std::string("Edep in sensitive Si_")+std::to_string(i), 10000, 0, 1*GeV);
+    
+  }
 
   // Creating ntuple
   //
@@ -73,6 +78,11 @@ RunAction::RunAction()
   analysisManager->CreateNtupleDColumn("Egap");
   analysisManager->CreateNtupleDColumn("Labs");
   analysisManager->CreateNtupleDColumn("Lgap");
+  analysisManager->CreateNtupleDColumn("Lsen");
+  for (int i =0 ; i<40*40; i++) {
+    analysisManager->CreateNtupleDColumn(std::string("Esen Si_")+std::to_string(i));
+  }
+  
   analysisManager->FinishNtuple();
 }
 
