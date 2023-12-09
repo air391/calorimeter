@@ -150,7 +150,7 @@ void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVo
                  sensMaterial,     // its material
                  std::string("Sens")+std::to_string(x)+std::to_string(y));          // its name
 
-  fSensitivePV
+  auto layerSensitivePV
     = new G4PVPlacement(
                  0,                // no rotation
                  G4ThreeVector(x, y, (absoThickness - gapThickness)/2), // its position
@@ -160,6 +160,7 @@ void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVo
                  false,            // no boolean operation
                  0,                // copy number
                  fCheckOverlaps);  // checking overlaps
+  fSensitivePV.push_back({.x=x, .y=y, .pv=layerSensitivePV});
   //
   // Gap
   //
