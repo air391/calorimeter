@@ -100,7 +100,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   G4double calorThickness = nofLayers * layerThickness;
   G4double calorLength = nofCells * calorSizeXY;
   G4double worldSizeXY = 1.2 * calorLength;
-  G4double worldSizeZ  = 1.2 * calorThickness;
+  G4double worldSizeZ  = 1.2 * calorThickness + 5*m;
 
   // Get materials
   G4Material * defaultMaterial = nullptr;

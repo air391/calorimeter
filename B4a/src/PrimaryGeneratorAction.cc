@@ -34,12 +34,14 @@
 #include "G4LogicalVolume.hh"
 #include "G4Box.hh"
 #include "G4Event.hh"
+#include "G4RandomDirection.hh"
+#include "G4ThreeVector.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
-
+#include <cmath>
 namespace B4
 {
 
@@ -72,34 +74,20 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   // This function is called at the begining of event
 
-  // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get world volume
-  // from G4LogicalVolumeStore
-  //
-  G4double worldZHalfLength = 0.;
-  auto worldLV = G4LogicalVolumeStore::GetInstance()->GetVolume("World");
-
-  // Check that the world volume has box shape
-  G4Box* worldBox = nullptr;
-  if (  worldLV ) {
-    worldBox = dynamic_cast<G4Box*>(worldLV->GetSolid());
-  }
-
-  if ( worldBox ) {
-    worldZHalfLength = worldBox->GetZHalfLength();
-  }
-  else  {
-    G4ExceptionDescription msg;
-    msg << "World volume of box shape not found." << G4endl;
-    msg << "Perhaps you have changed geometry." << G4endl;
-    msg << "The gun will be place in the center.";
-    G4Exception("PrimaryGeneratorAction::GeneratePrimaries()",
-      "MyCode0002", JustWarning, msg);
-  }
-
   // Set gun position
   fParticleGun
-    ->SetParticlePosition(G4ThreeVector(0., 0., 0.));
+    ->SetParticlePosition(G4ThreeVector(0., 0., -5 * m - 71.5 * mm));
+
+  // Set gun momentum
+  while(1)
+  {
+    auto Direction = G4RandomDirection();
+    if (Direction.z() >= std::cos(0.005) && Direction.z() <= 1.0)
+    {
+      fParticleGun->SetParticleMomentumDirection(Direction);
+      break;
+    }
+  }
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
