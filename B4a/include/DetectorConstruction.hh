@@ -34,6 +34,7 @@
 #include "G4SystemOfUnits.hh"
 #include <G4Material.hh>
 #include "globals.hh"
+#include <vector>
 
 class G4VPhysicalVolume;
 class G4GlobalMagFieldMessenger;
@@ -54,6 +55,12 @@ namespace B4
 ///
 /// In addition a transverse uniform magnetic field is defined
 /// via G4GlobalMagFieldMessenger class.
+
+struct Pixel {
+  G4double x;
+  G4double y;
+  G4VPhysicalVolume* pv;
+};
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -81,13 +88,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     //
     static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger;
                                       // magnetic field messenger
-
-    G4VPhysicalVolume* fAbsorberPV = nullptr; // the absorber physical volume
-    G4VPhysicalVolume* fSensitivePV = nullptr; // the absorber physical volume
-    G4VPhysicalVolume* fGapPV = nullptr;      // the gap physical volume
-
-    G4bool fCheckOverlaps = true; // option to activate checking of volumes overlaps
-
   // Geometry parameters
   G4int nofLayers = 26;
   G4int nofCells = 40;
@@ -107,6 +107,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   G4Material * absorberMaterial = nullptr;
   G4Material * sensMaterial = nullptr;
   G4Material * gapMaterial = nullptr;
+
+  G4VPhysicalVolume* fAbsorberPV = nullptr; // the absorber physical volume
+  std::vector<struct Pixel> fSensitivePV = std::vector<struct Pixel>(nofCells*nofCells); // the absorber physical volume
+  G4VPhysicalVolume* fGapPV = nullptr;      // the gap physical volume
+
+  G4bool fCheckOverlaps = true; // option to activate checking of volumes overlaps
 };
 
 // inline functions
@@ -116,7 +122,8 @@ inline const G4VPhysicalVolume* DetectorConstruction::GetAbsorberPV() const {
 }
 
 inline const G4VPhysicalVolume* DetectorConstruction::GetSensitivePV() const {
-  return fSensitivePV;
+  // to be implement
+  return fSensitivePV[0].pv;
 }
 
 inline const G4VPhysicalVolume* DetectorConstruction::GetGapPV() const  {
