@@ -26,7 +26,7 @@
 //
 /// \file DetectorConstruction.cc
 /// \brief Implementation of the DetectorConstruction class
-
+#include <string>
 #include "DetectorConstruction.hh"
 
 #include "G4Material.hh"
@@ -95,7 +95,8 @@ void DetectorConstruction::DefineMaterials()
   G4double a;  // mass of a mole;
   G4double z;  // z=mean number of protons;
   G4double density;
-
+  
+  new G4Material("liquidArgon", z=18., a= 39.95*g/mole, density= 1.390*g/cm3);
   // Vacuum
   new G4Material("Galactic", z=1., a=1.01*g/mole,density= universe_mean_density,
                   kStateGas, 2.73*kelvin, 3.e-18*pascal);
@@ -117,21 +118,21 @@ void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVo
   // Absorber
   //
   auto absorberS
-    = new G4Box("Abso",            // its name
+    = new G4Box(std::string("Abso")+std::to_string(x)+std::to_string(y),            // its name
                  calorSizeXY/2, calorSizeXY/2, absoThickness/2); // its size
 
   auto absorberLV
     = new G4LogicalVolume(
                  absorberS,        // its solid
                  absorberMaterial, // its material
-                 "Abso");          // its name
+                 std::string("Abso")+std::to_string(x)+std::to_string(y));          // its name
 
   fAbsorberPV
     = new G4PVPlacement(
                  0,                // no rotation
                  G4ThreeVector(x, y, -(sensThickness + gapThickness)/2), // its position
                  absorberLV,       // its logical volume
-                 "Abso",           // its name
+                 std::string("Abso")+std::to_string(x)+std::to_string(y),           // its name
                  layerLV,          // its mother  volume
                  false,            // no boolean operation
                  0,                // copy number
@@ -140,21 +141,21 @@ void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVo
   // Sensitive
   //
   auto sensitiveS
-    = new G4Box("Sens",            // its name
+    = new G4Box(std::string("Sens")+std::to_string(x)+std::to_string(y),            // its name
                  calorSizeXY/2, calorSizeXY/2, sensThickness/2); // its size
   
   auto sensitiveLV
     = new G4LogicalVolume(
                  sensitiveS,       // its solid
                  sensMaterial,     // its material
-                 "Sens");          // its name
+                 std::string("Sens")+std::to_string(x)+std::to_string(y));          // its name
 
   fSensitivePV
     = new G4PVPlacement(
                  0,                // no rotation
                  G4ThreeVector(x, y, (absoThickness - gapThickness)/2), // its position
                  sensitiveLV,      // its logical volume
-                 "Sens",           // its name
+                 std::string("Sens")+std::to_string(x)+std::to_string(y),           // its name
                  layerLV,          // its mother  volume
                  false,            // no boolean operation
                  0,                // copy number
@@ -163,21 +164,21 @@ void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVo
   // Gap
   //
   auto gapS
-    = new G4Box("Gap",             // its name
+    = new G4Box(std::string("Gap")+std::to_string(x)+std::to_string(y),             // its name
                  calorSizeXY/2, calorSizeXY/2, gapThickness/2); // its size
 
   auto gapLV
     = new G4LogicalVolume(
                  gapS,             // its solid
                  gapMaterial,      // its material
-                 "Gap");           // its name
+                 std::string("Gap")+std::to_string(x)+std::to_string(y));           // its name
 
   fGapPV
     = new G4PVPlacement(
                  0,                // no rotation
                  G4ThreeVector(x, y, (absoThickness + sensThickness)/2), // its position
                  gapLV,            // its logical volume
-                 "Gap",            // its name
+                 std::string("Gap")+std::to_string(x)+std::to_string(y),            // its name
                  layerLV,          // its mother  volume
                  false,            // no boolean operation
                  0,                // copy number
@@ -187,25 +188,6 @@ void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVo
 
 G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 {
-  // // Geometry parameters
-  // G4int nofLayers = 26;
-  // G4int nofCells = 40;
-  // G4double absoThickness = 3.5*mm;
-  // G4double sensThickness = 0.3*mm;
-  // G4double gapThickness =  1.7*mm;
-  // G4double calorSizeXY  = 1.01*cm;
-
-  // auto layerThickness = absoThickness +  sensThickness + gapThickness;
-  // auto calorThickness = nofLayers * layerThickness;
-  // auto calorLength = nofCells * calorSizeXY;
-  // auto worldSizeXY = 1.2 * calorLength;
-  // auto worldSizeZ  = 1.2 * calorThickness;
-
-  // // Get materials
-  // auto defaultMaterial = G4Material::GetMaterial("Galactic");
-  // auto absorberMaterial = G4Material::GetMaterial("G4_W");
-  // auto sensMaterial = G4Material::GetMaterial("G4_Si");
-  // auto gapMaterial = G4Material::GetMaterial("Galactic");
 
   if ( ! defaultMaterial || ! absorberMaterial || ! gapMaterial || ! sensMaterial ) {
     G4ExceptionDescription msg;
@@ -287,7 +269,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     for (G4int j = 0; j < 40; ++j) {
         auto x = (i - 19.5) * calorSizeXY;
         auto y = (j - 19.5) * calorSizeXY;
-        // auto x = 0;
+// auto x = 0;
         // auto y = 0;
         LayerConstruction(x, y, layerLV);
     }
