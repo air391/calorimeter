@@ -265,12 +265,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
               layerThickness);  // witdth of replica
 
 
-  for (G4int i = 0; i < 40; ++i) {
-    for (G4int j = 0; j < 40; ++j) {
-        auto x = (i - 19.5) * calorSizeXY;
-        auto y = (j - 19.5) * calorSizeXY;
-// auto x = 0;
-        // auto y = 0;
+  for (G4int i = 0; i < nofCells; ++i) {
+    for (G4int j = 0; j < nofCells; ++j) {
+        auto x = (i - nofCells/2. + 0.5) * calorSizeXY;
+        auto y = (j - nofCells/2. + 0.5) * calorSizeXY;
         LayerConstruction(x, y, layerLV);
     }
   }
