@@ -122,7 +122,6 @@ inline const G4VPhysicalVolume* DetectorConstruction::GetAbsorberPV() const {
 }
 
 inline const std::vector<struct Pixel>& DetectorConstruction::GetSensitivePV() const {
-  // to be implement
   return fSensitivePV;
 }
 

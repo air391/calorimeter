@@ -46,6 +46,7 @@
 
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
+#include "G4ios.hh"
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
@@ -79,7 +80,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   DefineMaterials();
 
   // Define volumes
-  return DefineVolumes();
+  auto world = DefineVolumes();
+  G4cout<<fAbsorberPV<<G4endl;
+  G4cout<<fGapPV<<G4endl;
+  for(struct Pixel &pix :fSensitivePV) {
+    G4cout<<pix.pv<<G4endl;
+  }
+  return world;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

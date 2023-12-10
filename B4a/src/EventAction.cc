@@ -61,9 +61,8 @@ void EventAction::BeginOfEventAction(const G4Event* /*event*/)
   fTrackLAbs = 0.;
   fTrackLGap = 0.;
   fTrackLSen = 0.;
-  for (int i = 0 ; i < fEnergySen.size(); i++) {
-    fEnergySen[i] = 0;
-  }
+  fEnergySen = 0.;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -82,10 +81,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
   analysisManager->FillH1(2, fTrackLAbs);
   analysisManager->FillH1(3, fTrackLGap);
   analysisManager->FillH1(4, fTrackLSen);
-  // analysisManager->FillH1(4, fEnergySen);
-  for (int i = 0 ; i < fEnergySen.size(); i++) {
-    analysisManager->FillH1(i+5, fEnergySen[i]);
-  }
+  analysisManager->FillH1(5, fEnergySen);
 
   // fill ntuple
   analysisManager->FillNtupleDColumn(0, fEnergyAbs);
@@ -93,10 +89,8 @@ void EventAction::EndOfEventAction(const G4Event* event)
   analysisManager->FillNtupleDColumn(2, fTrackLAbs);
   analysisManager->FillNtupleDColumn(3, fTrackLGap);
   analysisManager->FillNtupleDColumn(4, fTrackLSen);
-  // analysisManager->FillNtupleDColumn(4, fEnergySen);
-  for (int i = 0 ; i < fEnergySen.size(); i++) {
-    analysisManager->FillNtupleDColumn(i+5, fEnergySen[i]);
-  }
+  analysisManager->FillNtupleDColumn(5, fEnergySen);
+
   analysisManager->AddNtupleRow();
 
   // Print per event (modulo n)
@@ -116,11 +110,11 @@ void EventAction::EndOfEventAction(const G4Event* event)
                                         << G4BestUnit(fEnergyGap,"Energy")
        << "       total track length: " << std::setw(7)
                                         << G4BestUnit(fTrackLGap,"Length")
-      //  << G4endl
-      //  << "  Sensitive: total energy: " << std::setw(7)
-      //                                   << G4BestUnit(fEnergySen,"Energy")
-      //  << "       total track length: " << std::setw(7)
-      //                                   << G4BestUnit(fTrackLSen,"Length")
+       << G4endl
+       << "  Sensitive: total energy: " << std::setw(7)
+                                        << G4BestUnit(fEnergySen,"Energy")
+       << "       total track length: " << std::setw(7)
+                                        << G4BestUnit(fTrackLSen,"Length")
        << G4endl;
   }
 }

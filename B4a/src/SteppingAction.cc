@@ -74,20 +74,19 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     fEventAction->AddAbs(edep,stepLength);
     G4cout << "--- StepAction: edep in abs "<< edep <<G4endl;
   }
-
-  if ( volume == fDetConstruction->GetGapPV() ) {
+  else if ( volume == fDetConstruction->GetGapPV() ) {
     fEventAction->AddGap(edep,stepLength);
     G4cout << "--- StepAction: edep in gap "<< edep <<G4endl;
   }
-
-  if( volume != fDetConstruction->GetGapPV() && volume != fDetConstruction->GetAbsorberPV()) {
-    G4cout << "--- StepAction: edep in sen "<< edep <<G4endl;
-  }
-  for (int i = 0; i < 40*40; i++) {
-    if(volume == fDetConstruction->GetSensitivePV()[i].pv) {
-      fEventAction->AddSen(i, edep, stepLength);
+  else {
+    for (int i = 0; i < 40*40; i++) {
+      if(volume == fDetConstruction->GetSensitivePV()[i].pv) {
+        fEventAction->AddSen(edep, stepLength);
+        G4cout << "--- StepAction: edep in sen "<<i << " is "<< edep/keV <<G4endl;
+      }
     }
   }
+  G4cout << "--- StepAction: edep in" << volume << " is "<< edep/keV <<G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

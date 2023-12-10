@@ -33,6 +33,7 @@
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 #include <vector>
+#include "G4ios.hh"
 namespace B4a
 {
 
@@ -55,14 +56,14 @@ class EventAction : public G4UserEventAction
 
     void AddAbs(G4double de, G4double dl);
     void AddGap(G4double de, G4double dl);
-    void AddSen(int i, G4double de, G4double dl);
+    void AddSen(G4double de, G4double dl);
 
   private:
     G4double  fEnergyAbs = 0.;
     G4double  fEnergyGap = 0.;
     G4double  fTrackLAbs = 0.;
     G4double  fTrackLGap = 0.;
-    std::vector<G4double>  fEnergySen = std::vector<G4double>(40*40);
+    G4double  fEnergySen = 0.;
     G4double  fTrackLSen = 0.;
 };
 
@@ -78,9 +79,11 @@ inline void EventAction::AddGap(G4double de, G4double dl) {
   fTrackLGap += dl;
 }
 
-inline void EventAction::AddSen(int i ,G4double de, G4double dl) {
-  fEnergySen[i] += de;
+inline void EventAction::AddSen(G4double de, G4double dl) {
+  G4cout <<"-----Sensitive Energy before: "<< fEnergySen <<G4endl;
+  fEnergySen += de;
   fTrackLSen += dl;
+  G4cout <<"-----Sensitive Energy after: "<< fEnergySen <<G4endl;
 }
 
 }
