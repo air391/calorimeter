@@ -72,10 +72,16 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
   if ( volume == fDetConstruction->GetAbsorberPV() ) {
     fEventAction->AddAbs(edep,stepLength);
+    G4cout << "--- StepAction: edep in abs "<< edep <<G4endl;
   }
 
   if ( volume == fDetConstruction->GetGapPV() ) {
     fEventAction->AddGap(edep,stepLength);
+    G4cout << "--- StepAction: edep in gap "<< edep <<G4endl;
+  }
+
+  if( volume != fDetConstruction->GetGapPV() && volume != fDetConstruction->GetAbsorberPV()) {
+    G4cout << "--- StepAction: edep in sen "<< edep <<G4endl;
   }
 }
 
