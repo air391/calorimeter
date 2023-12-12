@@ -81,10 +81,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // Define volumes
   auto world = DefineVolumes();
-  G4cout<<fAbsorberPV<<G4endl;
-  G4cout<<fGapPV<<G4endl;
+  G4cout<<"abs volumn:"<<fAbsorberPV<<G4endl;
+  G4cout<<"gap volumn:"<<fGapPV<<G4endl;
   for(struct Pixel &pix :fSensitivePV) {
-    G4cout<<pix.pv<<G4endl;
+    G4cout<<"pix volumn:"<<pix.pv<<G4endl;
   }
   return world;
 }

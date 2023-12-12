@@ -62,6 +62,7 @@ void EventAction::BeginOfEventAction(const G4Event* /*event*/)
   fTrackLGap = 0.;
   fTrackLSen = 0.;
   fEnergySen = 0.;
+  G4cout<<"EventStart:"<<G4endl;
 
 }
 
