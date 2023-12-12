@@ -81,8 +81,9 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
   else {
     for (int i = 0; i < NofCells * NofCells; i++) {
       if(volume == fDetConstruction->GetSensitivePV()[i].pv) {
-        fEventAction->AddSen(edep, stepLength);
-        G4cout << "--- StepAction: edep in sen "<<i << " is "<< edep/keV <<G4endl;
+        fEventAction->AddSen(i,edep, stepLength);
+        G4cout << "--- StepAction: edep in sen "<<i << " is "<< edep/keV <<" kev"<<G4endl;
+        break;
       }
     }
   }

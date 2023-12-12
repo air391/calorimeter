@@ -61,7 +61,9 @@ void EventAction::BeginOfEventAction(const G4Event* /*event*/)
   fTrackLAbs = 0.;
   fTrackLGap = 0.;
   fTrackLSen = 0.;
-  fEnergySen = 0.;
+  for (int i = 0 ; i < NofCells*NofCells; i++) {
+    fEnergySen[i] = 0.;
+  }
   G4cout<<"EventStart:"<<G4endl;
 
 }
@@ -75,14 +77,14 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
-
+  analysisManager->SetNtupleMerging(true);
   // fill histograms
-  analysisManager->FillH1(0, fEnergyAbs);
-  analysisManager->FillH1(1, fEnergyGap);
-  analysisManager->FillH1(2, fTrackLAbs);
-  analysisManager->FillH1(3, fTrackLGap);
-  analysisManager->FillH1(4, fTrackLSen);
-  analysisManager->FillH1(5, fEnergySen);
+  // analysisManager->FillH1(0, fEnergyAbs);
+  // analysisManager->FillH1(1, fEnergyGap);
+  // analysisManager->FillH1(2, fTrackLAbs);
+  // analysisManager->FillH1(3, fTrackLGap);
+  // analysisManager->FillH1(4, fTrackLSen);
+  // analysisManager->FillH1(5, fEnergySen);
 
   // fill ntuple
   analysisManager->FillNtupleDColumn(0, fEnergyAbs);
@@ -90,7 +92,9 @@ void EventAction::EndOfEventAction(const G4Event* event)
   analysisManager->FillNtupleDColumn(2, fTrackLAbs);
   analysisManager->FillNtupleDColumn(3, fTrackLGap);
   analysisManager->FillNtupleDColumn(4, fTrackLSen);
-  analysisManager->FillNtupleDColumn(5, fEnergySen);
+  for (int i = 0; i < NofCells*NofCells; i++) {
+    analysisManager->FillNtupleDColumn(i+5, fEnergySen[i]);
+  }
 
   analysisManager->AddNtupleRow();
 
@@ -111,11 +115,6 @@ void EventAction::EndOfEventAction(const G4Event* event)
                                         << G4BestUnit(fEnergyGap,"Energy")
        << "       total track length: " << std::setw(7)
                                         << G4BestUnit(fTrackLGap,"Length")
-       << G4endl
-       << "  Sensitive: total energy: " << std::setw(7)
-                                        << G4BestUnit(fEnergySen,"Energy")
-       << "       total track length: " << std::setw(7)
-                                        << G4BestUnit(fTrackLSen,"Length")
        << G4endl;
   }
 }
