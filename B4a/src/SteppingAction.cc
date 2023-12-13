@@ -30,6 +30,7 @@
 #include "SteppingAction.hh"
 #include "EventAction.hh"
 #include "DetectorConstruction.hh"
+#include "CaloValue.hh"
 
 #include "G4Step.hh"
 #include "G4RunManager.hh"
@@ -63,7 +64,6 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
   // energy deposit
   auto edep = step->GetTotalEnergyDeposit();
-
   // step length
   G4double stepLength = 0.;
   if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. ) {
@@ -72,10 +72,20 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
   if ( volume == fDetConstruction->GetAbsorberPV() ) {
     fEventAction->AddAbs(edep,stepLength);
+    G4cout << "--- StepAction: edep in abs "<< edep <<G4endl;
   }
-
-  if ( volume == fDetConstruction->GetGapPV() ) {
+  else if ( volume == fDetConstruction->GetGapPV() ) {
     fEventAction->AddGap(edep,stepLength);
+    G4cout << "--- StepAction: edep in gap "<< edep <<G4endl;
+  }
+  else {
+    for (int i = 0; i < NofCells * NofCells; i++) {
+      if(volume == fDetConstruction->GetSensitivePV()[i].pv) {
+        fEventAction->AddSen(i,edep, stepLength);
+        G4cout << "--- StepAction: edep in sen "<<i << " is "<< edep/keV <<" kev"<<G4endl;
+        break;
+      }
+    }
   }
 }
 

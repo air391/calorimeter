@@ -34,7 +34,8 @@
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
-
+#include <string>
+#include "CaloValue.hh"
 namespace B4
 {
 
@@ -55,16 +56,18 @@ RunAction::RunAction()
   //analysisManager->SetNtupleDirectoryName("ntuple");
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetNtupleMerging(true);
-    // Note: merging ntuples is available only with Root output
+  // Note: merging ntuples is available only with Root output
 
   // Book histograms, ntuple
   //
 
   // Creating histograms
-  analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 800*MeV);
-  analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 100*MeV);
-  analysisManager->CreateH1("Labs","trackL in absorber", 100, 0., 1*m);
-  analysisManager->CreateH1("Lgap","trackL in gap", 100, 0., 50*cm);
+  // analysisManager->CreateH1("Eabs","Edep in absorber", 100, 0., 800*keV);
+  // analysisManager->CreateH1("Egap","Edep in gap", 100, 0., 100*keV);
+  // analysisManager->CreateH1("Labs","trackL in absorber", 100, 0., 1*m);
+  // analysisManager->CreateH1("Lgap","trackL in gap", 100, 0., 50*cm);
+  // analysisManager->CreateH1("Lsen", "trackL in sensitive Si", 100, 0, 50*cm);
+  // analysisManager->CreateH1("Esen", std::string("Edep in sensitive Si_"), 1000, 0, 1000*keV);
 
   // Creating ntuple
   //
@@ -73,6 +76,11 @@ RunAction::RunAction()
   analysisManager->CreateNtupleDColumn("Egap");
   analysisManager->CreateNtupleDColumn("Labs");
   analysisManager->CreateNtupleDColumn("Lgap");
+  analysisManager->CreateNtupleDColumn("Lsen");
+  for (int i = 0 ; i < NofCells*NofCells; i++) {
+    analysisManager->CreateNtupleDColumn(std::string("Esen_")+std::to_string(i));
+  }
+  
   analysisManager->FinishNtuple();
 }
 
@@ -94,9 +102,9 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 
   // Open an output file
   //
-  G4String fileName = "B4.root";
+  // G4String fileName = "B4.root";
   // Other supported output types:
-  // G4String fileName = "B4.csv";
+  G4String fileName = "B4.csv";
   // G4String fileName = "B4.hdf5";
   // G4String fileName = "B4.xml";
   analysisManager->OpenFile(fileName);

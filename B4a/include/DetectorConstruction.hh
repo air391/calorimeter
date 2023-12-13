@@ -34,6 +34,8 @@
 #include "G4SystemOfUnits.hh"
 #include <G4Material.hh>
 #include "globals.hh"
+#include <vector>
+#include "CaloValue.hh"
 
 class G4VPhysicalVolume;
 class G4GlobalMagFieldMessenger;
@@ -55,6 +57,12 @@ namespace B4
 /// In addition a transverse uniform magnetic field is defined
 /// via G4GlobalMagFieldMessenger class.
 
+struct Pixel {
+  G4double x;
+  G4double y;
+  G4VPhysicalVolume* pv;
+};
+
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
@@ -68,7 +76,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     // get methods
     //
     const G4VPhysicalVolume* GetAbsorberPV() const;
-    const G4VPhysicalVolume* GetSensitivePV() const;
+    const std::vector<struct Pixel>& GetSensitivePV() const;
     const G4VPhysicalVolume* GetGapPV() const;
 
   private:
@@ -81,20 +89,13 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     //
     static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger;
                                       // magnetic field messenger
-
-    G4VPhysicalVolume* fAbsorberPV = nullptr; // the absorber physical volume
-    G4VPhysicalVolume* fSensitivePV = nullptr; // the absorber physical volume
-    G4VPhysicalVolume* fGapPV = nullptr;      // the gap physical volume
-
-    G4bool fCheckOverlaps = true; // option to activate checking of volumes overlaps
-
   // Geometry parameters
-  G4int nofLayers = 26;
-  G4int nofCells = 40;
-  G4double absoThickness = 3.5*mm;
-  G4double sensThickness = 0.3*mm;
-  G4double gapThickness =  1.7*mm;
-  G4double calorSizeXY  = 1.01*cm;
+  G4int nofLayers = NofLayers;
+  G4int nofCells = NofCells;
+  G4double absoThickness = AbsoThickness;
+  G4double sensThickness = SensThickness;
+  G4double gapThickness =  GapThickness;
+  G4double calorSizeXY  = CalorSizeXY;
 
   G4double layerThickness = absoThickness +  sensThickness + gapThickness;
   G4double calorThickness = nofLayers * layerThickness;
@@ -107,6 +108,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   G4Material * absorberMaterial = nullptr;
   G4Material * sensMaterial = nullptr;
   G4Material * gapMaterial = nullptr;
+
+  G4VPhysicalVolume* fAbsorberPV = nullptr; // the absorber physical volume
+  std::vector<struct Pixel> fSensitivePV = std::vector<struct Pixel>(); // the absorber physical volume
+  G4VPhysicalVolume* fGapPV = nullptr;      // the gap physical volume
+
+  G4bool fCheckOverlaps = true; // option to activate checking of volumes overlaps
 };
 
 // inline functions
@@ -115,7 +122,7 @@ inline const G4VPhysicalVolume* DetectorConstruction::GetAbsorberPV() const {
   return fAbsorberPV;
 }
 
-inline const G4VPhysicalVolume* DetectorConstruction::GetSensitivePV() const {
+inline const std::vector<struct Pixel>& DetectorConstruction::GetSensitivePV() const {
   return fSensitivePV;
 }
 

@@ -60,6 +60,12 @@ void EventAction::BeginOfEventAction(const G4Event* /*event*/)
   fEnergyGap = 0.;
   fTrackLAbs = 0.;
   fTrackLGap = 0.;
+  fTrackLSen = 0.;
+  for (int i = 0 ; i < NofCells*NofCells; i++) {
+    fEnergySen[i] = 0.;
+  }
+  G4cout<<"EventStart:"<<G4endl;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -71,18 +77,25 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
-
+  analysisManager->SetNtupleMerging(true);
   // fill histograms
-  analysisManager->FillH1(0, fEnergyAbs);
-  analysisManager->FillH1(1, fEnergyGap);
-  analysisManager->FillH1(2, fTrackLAbs);
-  analysisManager->FillH1(3, fTrackLGap);
+  // analysisManager->FillH1(0, fEnergyAbs);
+  // analysisManager->FillH1(1, fEnergyGap);
+  // analysisManager->FillH1(2, fTrackLAbs);
+  // analysisManager->FillH1(3, fTrackLGap);
+  // analysisManager->FillH1(4, fTrackLSen);
+  // analysisManager->FillH1(5, fEnergySen);
 
   // fill ntuple
   analysisManager->FillNtupleDColumn(0, fEnergyAbs);
   analysisManager->FillNtupleDColumn(1, fEnergyGap);
   analysisManager->FillNtupleDColumn(2, fTrackLAbs);
   analysisManager->FillNtupleDColumn(3, fTrackLGap);
+  analysisManager->FillNtupleDColumn(4, fTrackLSen);
+  for (int i = 0; i < NofCells*NofCells; i++) {
+    analysisManager->FillNtupleDColumn(i+5, fEnergySen[i]);
+  }
+
   analysisManager->AddNtupleRow();
 
   // Print per event (modulo n)
