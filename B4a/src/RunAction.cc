@@ -72,15 +72,18 @@ RunAction::RunAction()
   // Creating ntuple
   //
   analysisManager->CreateNtuple("B4", "Edep and TrackL");
-  analysisManager->CreateNtupleDColumn("Eabs");
-  analysisManager->CreateNtupleDColumn("Egap");
-  analysisManager->CreateNtupleDColumn("Labs");
-  analysisManager->CreateNtupleDColumn("Lgap");
-  analysisManager->CreateNtupleDColumn("Lsen");
+  analysisManager->CreateNtupleDColumn("Egap"); // 0
+  analysisManager->CreateNtupleDColumn("Labs"); // 1
+  analysisManager->CreateNtupleDColumn("Lgap"); // 2
+  analysisManager->CreateNtupleDColumn("Lsen"); // 3
   for (int i = 0 ; i < NofCells*NofCells; i++) {
+    // 4 - NofCells*NofCells+3
     analysisManager->CreateNtupleDColumn(std::string("Esen_")+std::to_string(i));
   }
-  
+  for (int i = 0 ; i < NofCells*NofCells; i++) {
+    // NofCells*NofCells+4 - 2*NofCells*NofCells+3
+    analysisManager->CreateNtupleDColumn(std::string("Eabs_")+std::to_string(i));
+  }  
   analysisManager->FinishNtuple();
 }
 

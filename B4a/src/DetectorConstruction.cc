@@ -81,8 +81,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   // Define volumes
   auto world = DefineVolumes();
-  G4cout<<"abs volumn:"<<fAbsorberPV<<G4endl;
   G4cout<<"gap volumn:"<<fGapPV<<G4endl;
+  for (struct Pixel &pix : fAbsorberPV) {
+    G4cout<<"abs volumn:"<<pix.pv<<G4endl;
+  }
   for(struct Pixel &pix :fSensitivePV) {
     G4cout<<"pix volumn:"<<pix.pv<<G4endl;
   }
@@ -134,7 +136,7 @@ void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVo
                  absorberMaterial, // its material
                  std::string("Abso")+std::to_string(x)+std::to_string(y));          // its name
 
-  fAbsorberPV
+  auto layerAbsorberPV
     = new G4PVPlacement(
                  0,                // no rotation
                  G4ThreeVector(x, y, -(sensThickness + gapThickness)/2), // its position
@@ -144,6 +146,7 @@ void DetectorConstruction::LayerConstruction(G4double x, G4double y, G4LogicalVo
                  false,            // no boolean operation
                  0,                // copy number
                  fCheckOverlaps);  // checking overlaps
+  fAbsorberPV.push_back({.x=x, .y=y, .pv=layerAbsorberPV});
   //
   // Sensitive
   //

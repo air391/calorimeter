@@ -75,7 +75,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     // get methods
     //
-    const G4VPhysicalVolume* GetAbsorberPV() const;
+    const std::vector<struct Pixel>& GetAbsorberPV() const;
     const std::vector<struct Pixel>& GetSensitivePV() const;
     const G4VPhysicalVolume* GetGapPV() const;
 
@@ -109,7 +109,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   G4Material * sensMaterial = nullptr;
   G4Material * gapMaterial = nullptr;
 
-  G4VPhysicalVolume* fAbsorberPV = nullptr; // the absorber physical volume
+  std::vector<struct Pixel> fAbsorberPV = std::vector<struct Pixel>(); // the absorber physical volume
   std::vector<struct Pixel> fSensitivePV = std::vector<struct Pixel>(); // the absorber physical volume
   G4VPhysicalVolume* fGapPV = nullptr;      // the gap physical volume
 
@@ -118,7 +118,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 // inline functions
 
-inline const G4VPhysicalVolume* DetectorConstruction::GetAbsorberPV() const {
+inline const std::vector<struct Pixel>& DetectorConstruction::GetAbsorberPV() const {
   return fAbsorberPV;
 }
 
