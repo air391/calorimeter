@@ -55,12 +55,12 @@ class EventAction : public G4UserEventAction
     void  BeginOfEventAction(const G4Event* event) override;
     void    EndOfEventAction(const G4Event* event) override;
 
-    void AddAbs(G4double de, G4double dl);
+    void AddAbs(int i, G4double de, G4double dl);
     void AddGap(G4double de, G4double dl);
     void AddSen(int i, G4double de, G4double dl);
 
   private:
-    G4double  fEnergyAbs = 0.;
+    std::vector<double>  fEnergyAbs = std::vector<double>(NofCells*NofCells);
     G4double  fEnergyGap = 0.;
     G4double  fTrackLAbs = 0.;
     G4double  fTrackLGap = 0.;
@@ -70,8 +70,8 @@ class EventAction : public G4UserEventAction
 
 // inline functions
 
-inline void EventAction::AddAbs(G4double de, G4double dl) {
-  fEnergyAbs += de;
+inline void EventAction::AddAbs(int i, G4double de, G4double dl) {
+  fEnergyAbs[i] += de;
   fTrackLAbs += dl;
 }
 

@@ -37,6 +37,7 @@
 
 #include "Randomize.hh"
 #include <iomanip>
+#include <numeric>
 
 namespace B4a
 {
@@ -56,12 +57,12 @@ EventAction::~EventAction()
 void EventAction::BeginOfEventAction(const G4Event* /*event*/)
 {
   // initialisation per event
-  fEnergyAbs = 0.;
   fEnergyGap = 0.;
   fTrackLAbs = 0.;
   fTrackLGap = 0.;
   fTrackLSen = 0.;
   for (int i = 0 ; i < NofCells*NofCells; i++) {
+    fEnergyAbs[i] = 0.;
     fEnergySen[i] = 0.;
   }
   G4cout<<"EventStart:"<<G4endl;
@@ -87,15 +88,17 @@ void EventAction::EndOfEventAction(const G4Event* event)
   // analysisManager->FillH1(5, fEnergySen);
 
   // fill ntuple
-  analysisManager->FillNtupleDColumn(0, fEnergyAbs);
-  analysisManager->FillNtupleDColumn(1, fEnergyGap);
-  analysisManager->FillNtupleDColumn(2, fTrackLAbs);
-  analysisManager->FillNtupleDColumn(3, fTrackLGap);
-  analysisManager->FillNtupleDColumn(4, fTrackLSen);
-  for (int i = 0; i < NofCells*NofCells; i++) {
-    analysisManager->FillNtupleDColumn(i+5, fEnergySen[i]);
+  analysisManager->FillNtupleDColumn(0, fEnergyGap);
+  analysisManager->FillNtupleDColumn(1, fTrackLAbs);
+  analysisManager->FillNtupleDColumn(2, fTrackLGap);
+  analysisManager->FillNtupleDColumn(3, fTrackLSen);
+  for (int i = 0; i < NofCells * NofCells; i++) {
+    analysisManager->FillNtupleDColumn(i + 4, fEnergySen[i]);
   }
-
+  for (int i = 0; i < NofCells * NofCells; i++) {
+    analysisManager->FillNtupleDColumn(i + NofCells * NofCells + 3,
+                                       fEnergyAbs[i]);
+  }
   analysisManager->AddNtupleRow();
 
   // Print per event (modulo n)
@@ -107,7 +110,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
     G4cout
        << "   Absorber: total energy: " << std::setw(7)
-                                        << G4BestUnit(fEnergyAbs,"Energy")
+                                        << G4BestUnit(std::accumulate(fEnergyAbs.begin(), fEnergyAbs.end(), 0),"Energy")
        << "       total track length: " << std::setw(7)
                                         << G4BestUnit(fTrackLAbs,"Length")
        << G4endl

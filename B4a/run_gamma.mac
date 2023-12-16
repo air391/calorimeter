@@ -1,4 +1,4 @@
-/run/numberOfThreads 12
+/run/numberOfThreads 8
 #
 # Initialize kernel
 /run/initialize
