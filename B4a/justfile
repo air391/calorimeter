@@ -1,0 +1,31 @@
+default:
+  just --list
+
+run mac:
+  cp *.mac ./build
+  -rm ./build/B4_nt_B4_t* 2> /dev/null
+  cd build && ./exampleB4a -m {{mac}} > ./output
+  cd build && ../merge.sh
+configure:
+  cd build && cmake ..
+build:
+  cd build && make -j8
+
+# energy of gamma, unit GeV
+run_gamma energy num='1000': (edit energy num) && (rename energy num)
+  just run run_gamma.mac
+
+run_all:
+  just run_gamma 1
+  just run_gamma 2
+  just run_gamma 5
+  just run_gamma 10
+  just run_gamma 50
+  just run_gamma 100
+
+edit energy num:
+  cat run_gamma.template > run_gamma.mac
+  echo "/gun/energy {{energy}} GeV" >> run_gamma.mac
+  echo "/run/beamOn {{num}}" >> run_gamma.mac
+rename energy num:
+  mv ./build/B4.csv ./build/B4_{{energy}}_{{num}}.csv
