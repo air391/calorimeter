@@ -80,7 +80,7 @@ def get_exp_info(eSen):
         energys[i],pos[i] = get_shower_info(eSen[i])
     return energys, pos
 def gaus_fit(energys, ax:plt.Axes=None):
-    # return center, resolution
+    # return center, sigma
     hist, bins = np.histogram(energys,bins=50)
     bins = 0.5*(bins[1:]+bins[:-1])
     mod = lmfit.models.GaussianModel()
@@ -90,7 +90,16 @@ def gaus_fit(energys, ax:plt.Axes=None):
         raise Exception("gaus fit failed")
     if ax is not None:
         out.plot_fit(ax)
-    return out.best_values['center'], 2.355*out.best_values['sigma']/out.best_values['center']
+    return out.best_values['center'], out.best_values['sigma']
+def res_fit(sigma, energy, ax:plt.Axes=None):
+    mod = lmfit.models.ExpressionModel("sqrt((a/sqrt(e))**2+b**2)",independent_vars=['e'])
+    par = mod.make_params(a=1,b=1)
+    res = mod.fit(sigma/energy, par, e=energy)
+    if not res.success:
+        raise Exception("res fit failed")
+    if ax is not None:
+        res.plot_fit(ax,numpoints=1000)
+    return res.best_values['a'], res.best_values['b']
 if __name__ == "__main__":
     energy, num = extract(path)
     egap, labs, lgap, lsen, eSen, eAbs = reader_csv(path)

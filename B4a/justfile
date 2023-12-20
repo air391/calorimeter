@@ -28,4 +28,4 @@ edit energy num:
   echo "/gun/energy {{energy}} GeV" >> run_gamma.mac
   echo "/run/beamOn {{num}}" >> run_gamma.mac
 rename energy num:
-  mv ./build/B4.csv ./build/B4_{{energy}}_{{num}}.csv
+  mv ./build/B4.csv ./data/B4_{{energy}}_{{num}}.csv
