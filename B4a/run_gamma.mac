@@ -5,5 +5,5 @@
 # /tracking/verbose 1
 
 /gun/particle gamma
-/gun/energy 50 GeV
+/gun/energy 100 GeV
 /run/beamOn 1000
