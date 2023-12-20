@@ -3,6 +3,7 @@ import time
 import subprocess
 import functools
 import matplotlib.pyplot as plt
+import lmfit
 path = "./build/B4_1_1000.csv"
 nofCells = 40
 calorSizeXY = 1.01 # cm
@@ -61,29 +62,49 @@ def find_shower_pixel(idx_max):
     max_pos = pixel_pos_list()[idx_max]
     shower_pixels = np.array([i for i in range(nofCells*nofCells) if distance(pixel_pos_list()[i], max_pos) < 3.5])
     return shower_pixels
+def get_shower_info(eSen):
+    idx_max = np.argmax(eSen)
+    shower_pixels = find_shower_pixel(idx_max)
+    shower_energy = np.sum(eSen[shower_pixels])
+    shower_pos = np.average(pixel_pos_list()[shower_pixels], axis=0, weights=eSen[shower_pixels])
+    return shower_energy, shower_pos
+def gaus_fit(energys, ax:plt.Axes=None):
+    # return center, resolution
+    hist, bins = np.histogram(energys,bins=50)
+    bins = 0.5*(bins[1:]+bins[:-1])
+    mod = lmfit.models.GaussianModel()
+    pars = mod.guess(hist, x=bins)
+    out = mod.fit(hist, pars, x=bins)
+    if not out.success:
+        raise Exception("gaus fit failed")
+    if ax is not None:
+        out.plot_fit(ax)
+    return out.best_values['center'], 2.355*out.best_values['sigma']/out.best_values['center']
 if __name__ == "__main__":
     energy, num = extract(path)
     egap, labs, lgap, lsen, eSen, eAbs = reader_csv(path)
     energys = np.zeros(num)
     pos = np.zeros((num,2))
     for i in range(eSen.shape[0]):
-        eSen_i = eSen[i]
-        idx_max = np.argmax(eSen_i)
-        shower_pixels = find_shower_pixel(idx_max)
-        shower_energy = np.sum(eSen_i[shower_pixels])
-        shower_pos = np.average(pixel_pos_list()[shower_pixels], axis=0, weights=eSen_i[shower_pixels])
-        energys[i] = shower_energy
-        pos[i,:] = shower_pos
-    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+        energys[i] = np.sum(eSen[i])
+        pos[i] = np.average(pixel_pos_list(), axis=0, weights=eSen[i])
+
+    fig, axs= plt.subplots(2, 2, figsize=(10, 10))
     fig.suptitle(f"energy:{energy}MeV, num:{num}")
-    axs[0,0].set_title("energy histogram")
-    axs[0,1].set_title("position scatter")
-    axs[1,0].set_title("energy deposit of last one")
-    axs[1,1].set_title("shower range of last one")
-    h1 = axs[0,0].hist(energys,bins=50)
-    h2 = axs[0,1].scatter(pos[:,0], pos[:,1])
+    ax:plt.Axes = axs[0,0]
+    ax.set_title("energy histogram")
+    mu, resolution = gaus_fit(energys, ax)
+    ax:plt.Axes = axs[0,1]
+    ax.set_title("position scatter")
+    h2 = ax.scatter(pos[:,0], pos[:,1])
+    ax:plt.Axes = axs[1,0]
+    ax.set_title("energy deposit of last one")
     eSen2d = np.reshape(eSen, (nofCells,nofCells,num))
-    h3 = axs[1,0].imshow(np.reshape(eSen[-1,:], (nofCells,nofCells)), cmap='plasma', interpolation='nearest')
-    eSen[-1,:][shower_pixels] = 100
-    h4 = axs[1,1].imshow(np.reshape(eSen[-1,:],(nofCells,nofCells)), cmap='plasma', interpolation='nearest')
+    h3 = ax.imshow(np.reshape(eSen[-1,:], (nofCells,nofCells)), cmap='plasma', interpolation='nearest')
+    ax:plt.Axes = axs[1,1]
+    ax.set_title("shower range of last one")
+    shower_idx = find_shower_pixel(np.argmax(eSen[-1,:]))
+    shower_idx_not = np.fromiter((i for i in range(nofCells*nofCells) if i not in shower_idx), int)
+    eSen[-1,:][shower_idx_not] = 0
+    h4 = ax.imshow(np.reshape(eSen[-1,:],(nofCells,nofCells)), cmap='plasma', interpolation='nearest')
     plt.show()
