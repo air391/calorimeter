@@ -96,7 +96,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
     analysisManager->FillNtupleDColumn(i + 4, fEnergySen[i]);
   }
   for (int i = 0; i < NofCells * NofCells; i++) {
-    analysisManager->FillNtupleDColumn(i + NofCells * NofCells + 3,
+    analysisManager->FillNtupleDColumn(i + NofCells * NofCells + 4,
                                        fEnergyAbs[i]);
   }
   analysisManager->AddNtupleRow();
