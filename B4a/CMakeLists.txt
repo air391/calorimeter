@@ -16,6 +16,11 @@ else()
   find_package(Geant4 REQUIRED)
 endif()
 
+option(RANDOM "Random particle direction" OFF)
+if(RANDOM)
+  add_definitions(-DRANDOM)
+endif()
+
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 # Setup include directory for this project
