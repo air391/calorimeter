@@ -6,8 +6,8 @@ run mac:
   -rm ./build/B4_nt_B4_t* 2> /dev/null
   cd build && ./exampleB4a -m {{mac}} > ./output
   cd build && ../merge.sh
-configure:
-  cd build && cmake ..
+configure random='ON':
+  cd build && cmake -DRANDOM={{random}} ..
 build:
   cd build && make -j8
 
