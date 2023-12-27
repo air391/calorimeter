@@ -77,7 +77,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // Set gun position
   fParticleGun
     ->SetParticlePosition(G4ThreeVector(0., 0., -5 * m - 71.5 * mm));
-
+#ifdef RANDOM
   // Set gun momentum
   while(1)
   {
@@ -88,7 +88,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       break;
     }
   }
-
+#endif
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
