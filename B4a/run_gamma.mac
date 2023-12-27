@@ -4,6 +4,6 @@
 /run/initialize
 # /tracking/verbose 1
 
-/gun/particle gamma
-/gun/energy 100 GeV
-/run/beamOn 1000
+/gun/particle e-
+/gun/energy 5 GeV
+/run/beamOn 10
