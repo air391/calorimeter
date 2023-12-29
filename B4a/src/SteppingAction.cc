@@ -33,6 +33,8 @@
 #include "CaloValue.hh"
 
 #include "G4Step.hh"
+#include "G4AnalysisManager.hh"
+#include "G4UnitsTable.hh"
 #include "G4RunManager.hh"
 
 using namespace B4;
@@ -64,11 +66,31 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
   // energy deposit
   auto edep = step->GetTotalEnergyDeposit();
+  // deposit position
+  auto pos = step->GetPreStepPoint()->GetPosition();
   // step length
   G4double stepLength = 0.;
   if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. ) {
     stepLength = step->GetStepLength();
   }
+
+  #ifdef STEP
+
+  G4cout << "--- StepAction: edep "<< edep <<G4endl;
+  G4cout << "--- StepAction: pos "<< pos <<G4endl;
+
+  // get analysis manager
+  auto analysisManager = G4AnalysisManager::Instance();
+  analysisManager->SetNtupleMerging(true);
+
+  // fill ntuple
+  analysisManager->FillNtupleDColumn(0, edep);
+  analysisManager->FillNtupleDColumn(1, pos.x());
+  analysisManager->FillNtupleDColumn(2, pos.y());
+
+  analysisManager->AddNtupleRow();
+
+  #endif
 
   if ( volume == fDetConstruction->GetGapPV() ) {
     fEventAction->AddGap(edep,stepLength);

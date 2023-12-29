@@ -71,6 +71,17 @@ RunAction::RunAction()
 
   // Creating ntuple
   //
+  
+  #ifdef STEP
+
+  analysisManager->CreateNtuple("B4", "Record Edep and Position by step");
+  analysisManager->CreateNtupleDColumn("Edep"); // 0
+  analysisManager->CreateNtupleDColumn("Px"); // 1
+  analysisManager->CreateNtupleDColumn("Py"); // 2
+  analysisManager->FinishNtuple();
+
+  #else
+
   analysisManager->CreateNtuple("B4", "Edep and TrackL");
   analysisManager->CreateNtupleDColumn("Egap"); // 0
   analysisManager->CreateNtupleDColumn("Labs"); // 1
@@ -85,6 +96,8 @@ RunAction::RunAction()
     analysisManager->CreateNtupleDColumn(std::string("Eabs_")+std::to_string(i));
   }  
   analysisManager->FinishNtuple();
+
+  #endif
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

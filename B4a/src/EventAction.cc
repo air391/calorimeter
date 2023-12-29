@@ -76,6 +76,18 @@ void EventAction::EndOfEventAction(const G4Event* event)
   // Accumulate statistics
   //
 
+  #ifdef STEP
+
+  // get analysis manager
+  auto analysisManager = G4AnalysisManager::Instance();
+  analysisManager->SetNtupleMerging(true);
+  // file ntuples
+  analysisManager->FillNtupleDColumn(0, 100);
+  analysisManager->FillNtupleDColumn(1, 1000);
+  analysisManager->FillNtupleDColumn(2, 1000);
+  analysisManager->AddNtupleRow();
+  #else
+
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
   analysisManager->SetNtupleMerging(true);
@@ -100,6 +112,8 @@ void EventAction::EndOfEventAction(const G4Event* event)
                                        fEnergyAbs[i]);
   }
   analysisManager->AddNtupleRow();
+
+  #endif
 
   // Print per event (modulo n)
   //

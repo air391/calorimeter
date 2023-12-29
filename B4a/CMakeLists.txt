@@ -24,6 +24,11 @@ if(RANDOM)
   add_definitions(-DRANDOM)
 endif()
 
+option(STEP "Record step information" OFF)
+if(STEP)
+  add_definitions(-DSTEP)
+endif()
+
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 # Setup include directory for this project
@@ -60,6 +65,7 @@ set(EXAMPLEB4A_SCRIPTS
   run2.mac
   vis.mac
   run_gamma.mac
+  run_electron.mac
   )
 
 foreach(_script ${EXAMPLEB4A_SCRIPTS})
